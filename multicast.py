@@ -15,17 +15,17 @@ class UDPComm(Thread):
 
         super().__init__()
 
-        self.t = time.time()
-        self.address = address
-        self.rport = rport
-        self.sport = sport
-        self.network_adapter = network_adapter
+        self.t: float = time.time()
+        self.address: str = address
+        self.rport: int = rport
+        self.sport: int = sport
+        self.network_adapter: str = network_adapter
 
-        self.stop_event = Event()
+        self.stop_event: Event = Event()
         self.queue: Queue[bytes] = Queue(maxsize=100)
         self.observers: list[Callable[[bytes], None]] = []
 
-        self.send_lock = Lock()
+        self.send_lock: Lock = Lock()
         self.sock: Union[socket.socket, None] = None
 
     def connect(self):
@@ -50,7 +50,7 @@ class UDPComm(Thread):
 
         else:
 
-            # udp binds directly to interface
+            # udp binds directly to interface on all systems
             sock.bind((self.network_adapter, port))
 
         return sock
@@ -144,7 +144,7 @@ if __name__ == "__main__":
     def sender(address, sport, interface, data):
         """create udpcomm and send data"""
 
-        with UDPComm(address, rport, rport, interface) as udpComm: 
+        with UDPComm(address, sport, sport, interface) as udpComm: 
             udpComm.send_data(data)
 
     print(f"Multicast {'Listening' if args.mode==0 else 'Sending'}")
